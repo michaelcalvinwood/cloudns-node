@@ -24,5 +24,6 @@ const executePostRequest = async (endpoint, data = {}) => {
 
 const loginTest = async () => executePostRequest('/login/login.json');
 
+const getCurrentIP = async () => executePostRequest('/ip/get-my-ip.json');
     
-loginTest();
+getCurrentIP();
