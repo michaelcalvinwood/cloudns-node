@@ -34,14 +34,23 @@ const getRecordTypes = async (zoneType = 'domain') => {
 
     executePostRequest('/dns/get-available-record-types.json', data);
 }
-const listRecords = async (domain, type = null, host=null) => {
+const listRecords = async (domain, host=null, type = null) => {
     let data = {};
     data['domain-name'] = domain;
     if (type) data['type'] = type;
     if (host) data['host'] = host;
     data['order-by'] = 'host';
 
-    return executePostRequest('/dns/records.json', data);
+    let info = await executePostRequest('/dns/records.json', data);
+
+    let records = [];
+
+    for (const [key, value] of Object.entries(info)) {
+        //console.log(`${key}: ${value}`);
+        records.push(value);
+    }
+
+    return records;
 }
 
 /*
@@ -69,5 +78,18 @@ const addARecord = async (domain, host, ip, ttl = 900) => {
     return executePostRequest('/dns/add-record.json', data);
 }
 
-addARecord('treepadcloud.com', 'test', '8.8.8.8');
+const getARecordIds = async (domain, host) => {
+    let result = await listRecords(domain, host, 'A');
+    let ids = [];
+    for (let i = 0; i < result.length; ++i) {
+        ids.push(result[i].id);
+    }
+    console.log(ids);
+    return ids;
+}
+
+
+//listRecords('treepadcloud.com')
+//addARecord('treepadcloud.com', 'test', '8.8.8.8');
+getARecordIds('treepadcloud.com', 'test');
 
