@@ -28,6 +28,12 @@ const loginTest = async () => executePostRequest('/login/login.json');
 
 const getCurrentIP = async () => executePostRequest('/ip/get-my-ip.json');
 
+const getRecordTypes = async (zoneType = 'domain') => {
+    data = {};
+    data['zone-type'] = zoneType;
+
+    executePostRequest('/dns/get-available-record-types.json', data);
+}
 const listRecords = async (domain, type = null, host=null) => {
     let data = {};
     data['domain-name'] = domain;
@@ -38,4 +44,4 @@ const listRecords = async (domain, type = null, host=null) => {
     return executePostRequest('/dns/records.json', data);
 }
 
-listRecords('treepadcloud.com');
+getRecordTypes();
