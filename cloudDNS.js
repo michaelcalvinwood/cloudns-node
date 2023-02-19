@@ -88,6 +88,21 @@ const getARecordIds = async (domain, host) => {
     return ids;
 }
 
+const deleteARecord = async (domain, host) => {
+    const ids = await getARecordIds(domain, host);
+    const data = {};
+
+    data['domain-name'] = domain;
+    if (host) data['host'] = host;
+
+    for (let i = 0; i < ids.length; ++i) {
+        data['record-id'] = ids[i];
+        await executePostRequest('/dns/delete-record.json', data);
+    }
+}
+
+deleteARecord('treepadcloud.com', 'test');
+
 
 //listRecords('treepadcloud.com')
 //addARecord('treepadcloud.com', 'test', '8.8.8.8');
