@@ -44,4 +44,30 @@ const listRecords = async (domain, type = null, host=null) => {
     return executePostRequest('/dns/records.json', data);
 }
 
-getRecordTypes();
+/*
+    Available TTL's:
+        60 = 1 minute
+        300 = 5 minutes
+        900 = 15 minutes
+        1800 = 30 minutes
+        3600 = 1 hour
+        21600 = 6 hours
+        43200 = 12 hours
+        86400 = 1 day
+        172800 = 2 days
+        259200 = 3 days
+        604800 = 1 week
+        1209600 = 2 weeks
+        2592000 = 1 month
+*/
+const addARecord = async (domain, host, ip, ttl = 900) => {
+    let data = { ttl, record: ip};
+    data['record-type'] = 'A';
+    data['domain-name'] = domain;
+    if(host) data['host'] = host;
+
+    return executePostRequest('/dns/add-record.json', data);
+}
+
+addARecord('treepadcloud.com', 'test', '8.8.8.8');
+
