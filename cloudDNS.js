@@ -11,6 +11,8 @@ const executePostRequest = async (endpoint, data = {}) => {
     request.data['auth-password'] = process.env.CLOUDNS_AUTH_PASSWORD
     let response = null;
 
+    console.log(request);
+
     try {
         response = await axios(request);
     } catch (e) {
@@ -25,5 +27,15 @@ const executePostRequest = async (endpoint, data = {}) => {
 const loginTest = async () => executePostRequest('/login/login.json');
 
 const getCurrentIP = async () => executePostRequest('/ip/get-my-ip.json');
-    
-getCurrentIP();
+
+const listRecords = async (domain, type = null, host=null) => {
+    let data = {};
+    data['domain-name'] = domain;
+    if (type) data['type'] = type;
+    if (host) data['host'] = host;
+    data['order-by'] = 'host';
+
+    return executePostRequest('/dns/records.json', data);
+}
+
+listRecords('treepadcloud.com');
