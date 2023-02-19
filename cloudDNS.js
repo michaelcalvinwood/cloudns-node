@@ -24,6 +24,8 @@ const executePostRequest = async (endpoint, data = {}) => {
     return response.data;
 }
 
+
+
 const loginTest = async () => executePostRequest('/login/login.json');
 
 const getCurrentIP = async () => executePostRequest('/ip/get-my-ip.json');
@@ -53,6 +55,15 @@ const listRecords = async (domain, host=null, type = null) => {
     return records;
 }
 
+const getARecordIds = async (domain, host) => {
+    let result = await listRecords(domain, host, 'A');
+    let ids = [];
+    for (let i = 0; i < result.length; ++i) {
+        ids.push(result[i].id);
+    }
+    console.log(ids);
+    return ids;
+}
 /*
     Available TTL's:
         60 = 1 minute
@@ -78,14 +89,21 @@ const addARecord = async (domain, host, ip, ttl = 900) => {
     return executePostRequest('/dns/add-record.json', data);
 }
 
-const getARecordIds = async (domain, host) => {
-    let result = await listRecords(domain, host, 'A');
-    let ids = [];
-    for (let i = 0; i < result.length; ++i) {
-        ids.push(result[i].id);
+const updateARecord = async (domain, host, ip, ttl = 900) => {
+    const ids = await getARecordIds(domain, host);
+    
+    const data = {};
+    data['domain-name'] = domain;
+    if (host) data['host'] = host;
+    data['ttl'] = ttl;
+    data['record'] = ip;
+
+    for (let i = 0; i < ids.length; ++i) {
+        data['record-id'] = ids[i];
+        await executePostRequest('/dns/mod-record.json', data);
     }
-    console.log(ids);
-    return ids;
+
+    return;
 }
 
 const deleteARecord = async (domain, host) => {
@@ -101,10 +119,11 @@ const deleteARecord = async (domain, host) => {
     }
 }
 
-deleteARecord('treepadcloud.com', 'test');
 
 
+//deleteARecord('treepadcloud.com', 'test');
 //listRecords('treepadcloud.com')
 //addARecord('treepadcloud.com', 'test', '8.8.8.8');
-getARecordIds('treepadcloud.com', 'test');
+//getARecordIds('treepadcloud.com', 'test');
+//updateARecord('treepadcloud.com', 'test', '4.4.4.4');
 
