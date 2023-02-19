@@ -1,19 +1,15 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const loginTest = async () => {
+const executePostRequest = async (endpoint, data = {}) => {
     let request = {
-        url: 'https://api.cloudns.net/login/login.json',
+        url: `https://api.cloudns.net${endpoint}`,
         method: 'post',
-        data: {}
+        data
     }
     request.data['auth-id'] = process.env.CLOUDNS_AUTH_ID;
     request.data['auth-password'] = process.env.CLOUDNS_AUTH_PASSWORD
-
     let response = null;
-
-    // console.log(request);
-    // return;
 
     try {
         response = await axios(request);
@@ -26,4 +22,7 @@ const loginTest = async () => {
     return response.data;
 }
 
+const loginTest = async () => executePostRequest('/login/login.json');
+
+    
 loginTest();
